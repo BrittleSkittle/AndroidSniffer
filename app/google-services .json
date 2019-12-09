@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "334555321087",
+    "firebase_url": "https://sniffer-device.firebaseio.com",
+    "project_id": "sniffer-device",
+    "storage_bucket": "sniffer-device.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334555321087:android:897966180677121f0cb2ca",
+        "android_client_info": {
+          "package_name": "com.android.internship_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334555321087-b06uiogd6buum5pvpsafbkke2aan1jm2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKtMuoEU0HFMCKYbcAg9QTrYo6W2CGsho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334555321087-b06uiogd6buum5pvpsafbkke2aan1jm2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
