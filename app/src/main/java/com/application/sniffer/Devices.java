@@ -1,3 +1,4 @@
+/*
 package com.application.sniffer;
 
 import android.bluetooth.BluetoothAdapter;
@@ -43,3 +44,4 @@ public class Devices extends MainActivity {
         super.onDestroy();
     }
 }
+*/

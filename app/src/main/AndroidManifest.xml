@@ -7,6 +7,7 @@
     <dist:module dist:instant="true" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
@@ -63,6 +64,11 @@
 
         <service android:name=".cap.PacketCaptureService2" />
         <service android:name=".cap.PacketCaptureService" />
+        <receiver android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="BluetoothDevice.ACTION_FOUND">
+                </action></intent-filter>
+        </receiver>
     </application>
 
 </manifest>

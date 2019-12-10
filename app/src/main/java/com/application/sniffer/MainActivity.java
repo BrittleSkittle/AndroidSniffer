@@ -38,6 +38,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.BLUETOOTH;
+import static android.Manifest.permission.BLUETOOTH_ADMIN;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
@@ -73,50 +76,31 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        final Intent intent2 = new Intent(this, Devices.class);
+      /*  final Intent intent2 = new Intent(this, Devices.class);
         Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(intent2);
             }
-        });
+        });*/
         //uploadLog();
 
 
     }
 
     private void getperms() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{WRITE_EXTERNAL_STORAGE}, 3);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 3);
         }
-        if (ContextCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            new PeteLog("Perms", "info", "Permission Granted");
-        }
-        else{
-            new PeteLog("Perms", "warning", "Permission NOT Granted");
-        }
+
 
         FileManager.initFileManager();
     }
-    public static final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            Map<String, Object> btInfo = new HashMap<>();
-            String action = intent.getAction();
-            new PeteLog("MainActivity BR", "BTinfo", "mReciever called");
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                btInfo.put("Name", device.getName() );
-                btInfo.put("Address", device.getAddress());
-                btInfo.put("Type", device.getType());
-                btInfo.put("Connection", "Discovered");
-                btInfo.put("Time", System.currentTimeMillis()-MainActivity.StartTime);
-                new PeteLog("MainActivity", "info", "Broadcast action found");
-                Fire.uploadFireMap("BlueTooth", btInfo);
-            }
 
-        }
-    };
+
+
 
 
     public PacketItem Sniff() {
@@ -151,11 +135,36 @@ public class MainActivity extends AppCompatActivity{
     public void start(View view) {
         new PeteLog("MainActivity", "info", "start button pressed");
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+            final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    Map<String, Object> btInfo = new HashMap<>();
+                    String action = intent.getAction();
+                    new PeteLog("MainActivity BR", "BTinfo", "mReciever called, action: " + action);
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    btInfo.put("Action", action);
+                    btInfo.put("Name", device.getName());
+                    btInfo.put("Address", device.getAddress());
+                    btInfo.put("Type", device.getType());
+                    btInfo.put("Time", System.currentTimeMillis() - MainActivity.StartTime);
+                    btInfo.put("Contents", device.describeContents());
+                    btInfo.put("UUID", device.getUuids());
+                    btInfo.put("Bond State",device.getBondState());
+                    Fire.uploadFireMap("BlueTooth", btInfo);
+
+                }
+            };
+
         if (!running) {
-            result();
+            //result();
 
 
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+            filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+            filter.addAction(BluetoothDevice.ACTION_NAME_CHANGED);
             registerReceiver(mReceiver, filter);
             bluetoothAdapter.startDiscovery();
             //BlueTooth.start(this);
